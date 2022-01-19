@@ -1,0 +1,7 @@
+{
+  "fromMail" : "",
+  "username" : "",
+  "password" : "",
+  "smtpHost" : "smtp.etu.univ-nantes.fr",
+  "smtpPort" : "587"
+}

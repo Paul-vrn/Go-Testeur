@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion Admin</title>
+    <link rel="icon" type="image/png" href="./web/assets/images/logo.png" />
+    <link rel="stylesheet" href="./web/assets/css/materialize.min.css">
+    <link rel="stylesheet" href="./web/assets/css/login.css">
+
+</head>
+<body>
+<div class="main">
+    <h1>Login Admin</h1>
+    <form action="/loginAdmin?login" method="post">
+        Username:<input type="text" name="login" required>
+        Password:<input type="password" name="password" required>
+        <input class="button"  type="submit" value="Login">
+    </form>
+    <div class="separator"></div>
+    <a class="button change-page" href="/login">Connexion étudiant</a>
+</div>
+
+<script src="./web/assets/js/materialize.min.js"></script>
+{{if .Alert}}
+    <p id="alertMsg">{{.Alert}}</p>
+    <script src="./web/assets/js/alert.js"></script>
+{{end}}
+
+</body>
+</html>

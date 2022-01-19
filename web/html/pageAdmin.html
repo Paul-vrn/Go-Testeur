@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Page Admin</title>
+    <link rel="icon" type="image/png" href="./web/assets/images/logo.png" />
+    <link rel="stylesheet" href="./web/assets/css/materialize.min.css">
+    <link rel="stylesheet" href="./web/assets/css/global.css">
+    <link rel="stylesheet" href="./web/assets/css/pageAdmin.css">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body>
+<div id="header">
+    <h1>Page Admin</h1>
+    <div id="logout">
+        <a href="pageAdmin?logout">Logout</a>
+    </div>
+</div>
+<div class="main">
+    <div class="title">
+        {{if eq .DefiActuel.Num 0}}
+        <h2>Il n'y a pas de défi en cours</h2>
+        {{else}}
+        <h2>Défi actuel : défi n°{{.DefiActuel.Num}}</h2>
+        <h2>Il a commencé le {{.DefiActuel.DateDebutString}}
+            et se termine le {{.DefiActuel.DateFinString}}</h2>
+        {{end}}
+    </div>
+    <div class="separator"></div>
+    <div class="row">
+        <div class="col s12">
+            <ul class="tabs">
+                <li class="tab col s2"><a href="#up-defi">Déposer un défi</a></li>
+                <li class="tab col {{if eq (len .ListeDefis) 0}} disabled {{end}} s2"><a href="#modif-date">Modifier le défi</a></li>
+                <li class="tab col {{if eq (len .ListeDefis) 0}} disabled {{end}} s2"><a href="#up-test">Déposer des test</a></li>
+                <li class="tab col {{if eq (len .ListeDefis) 0}} disabled {{end}} s2"><a href="#liste-defi">Liste des défis</a></li>
+                <li class="tab col {{if eq (len .ListeDefis) 0}} disabled {{end}} s2"><a href="#stats">Statistiques</a></li>
+                <li class="tab col s2"><a href="#logs">Logs</a></li>
+            </ul>
+        </div>
+        <div id="up-defi" class="col s12">
+            <h3>Enregistrer un défi avec sa correction, sa date de début et de fin.</h3>
+            <h3>Il peut aussi servir à modifier le fichier de correction du défi actuel.</h3>
+            <form enctype="multipart/form-data"  action="/pageAdmin?form=defi" method="post">
+                <div class="file-depot">
+                    <p>Dépot de la correction :</p>
+                    <div class="chose-file" id="file-defi">
+                        <label for="input-file-defi">
+                            <img src="./web/assets/images/upload.png">
+                            <p>Choisir un fichier</p>
+                        </label>
+                        <input type="file" name="upload" id="input-file-defi" required="required">
+                    </div>
+                </div>
+                <div class="dates date">
+                    <div class="date-selector">
+                        <p>Date de début :</p>
+                        <input required type="text" class="datepicker" name="date_debut" {{if ne .DefiActuel.Num 0}} value="{{.DefiActuel.DateDebutString}}" {{end}}>
+                    </div>
+                    <div class="date-selector">
+                        <p>Date de fin :</p>
+                        <input required type="text" class="datepicker" name="date_fin" {{if ne .DefiActuel.Num 0}} value="{{.DefiActuel.DateFinString}}" {{end}}>
+                    </div>
+                </div>
+                <div class="dates horaire">
+                    <div class="date-selector">
+                        <p>Heure de début : </p>
+                        <input required type="text" class="timepicker" name="time_debut" {{if ne .DefiActuel.Num 0}} value="{{.DefiActuel.TimeDebutString}}" {{end}}>
+                    </div>
+                    <div class="date-selector">
+                        <p>Heure de fin : </p>
+                        <input required type="text" class="timepicker" name="time_fin" {{if ne .DefiActuel.Num 0}} value="{{.DefiActuel.TimeFinString}}" {{end}}>
+                    </div>
+                </div>
+                <div>
+                    <input type="submit" class="button" value="déposer" name="submit"/>
+                </div>
+            </form>
+            {{if gt (len .ListeDefis) 0}}
+            <div class="separator"></div>
+            <div id="delete">
+                <h2>Supprimer le dernier défi envoyé</h2>
+                <form action="/pageAdmin?form=DeleteDefi" method="post">
+                    <input type="submit" class="button" value="Supprimer" name="submit">
+                </form>
+            </div>
+            {{end}}
+        </div>
+        <div id="modif-date" class="col s12">
+            <h3>Modifier la date du défi et le fichier de correction du défi sélectionné :</h3>
+            <div class="explication">
+                 <p>Il n'est pas nécessaire de choisir un fichier si l'on souhaite changer uniquement la date de rendu</p>
+            </div>
+            <br>
+            <form enctype="multipart/form-data" action="/pageAdmin?form=modify-defi" method="post">
+                <p>Numéro du défi à modifer :</p>
+                <select id="selectModifyDate" name="defiSelectModif" required="required" onchange="ChangeDateInput( event, 'modif-date')">
+                    {{range .ListeDefis}}
+                    <option value="{{.Num}}">{{.Num}}</option>
+                    {{end}}
+                </select>
+
+
+                <div class="dates date">
+                    <div class="date-selector">
+                        <p>Date de début :</p>
+                        <input required type="text" class="datepickerModif" name="date_debut" {{if .ListeDefis}} value="{{(index .ListeDefis 0).DateDebutString}}" {{end}}>
+                    </div>
+                    <div class="date-selector">
+                        <p>Date de fin :</p>
+                        <input required type="text" class="datepickerModif" name="date_fin" {{if .ListeDefis}} value="{{(index .ListeDefis 0).DateFinString}}" {{end}}>
+                    </div>
+                </div>
+                <div class="dates horaire">
+                    <div class="date-selector">
+                        <p>Heure de début : </p>
+                        <input required type="text" class="timepicker" name="time_debut" {{if .ListeDefis}} value="{{(index .ListeDefis 0).TimeDebutString}}" {{end}}>
+                    </div>
+                    <div class="date-selector">
+                        <p>Heure de fin : </p>
+                        <input required type="text" class="timepicker" name="time_fin" {{if .ListeDefis}} value="{{(index .ListeDefis 0).TimeFinString}}" {{end}}>
+                    </div>
+                </div>
+
+
+                <br>
+                <div class="file-depot">
+                <p>Dépot de la correction :</p>
+                <div class="chose-file" id="file-defi-modify">
+                    <label for="input-file-defi-modify">
+                        <img src="./web/assets/images/upload.png">
+                        <p>Choisir un fichier</p>
+                    </label>
+                    <input type="file" name="upload" id="input-file-defi-modify">
+                </div>
+                    <br>
+                </div>
+                <input class="button" type="submit" name="action" value="Envoyer">
+            </form>
+        </div>
+        <div id="up-test" class="col s12">
+            <h3>Formulaire pour upload des tests : </h3>
+            <div class="explication">
+                <p>Les formats acceptés sont les .zip et les .tar</p>
+                <p>l'archive doit comprendre à la racine les fichiers/dossiers servant au test et un fichier nommé "config"
+                    contenant la liste des arguments pour chaque cas de test. Pas besoin de spécifier un nom à l'archive.</p>
+                <p>Exemple de fichier config :</p>
+                <p class="code">
+                    fichier1 fichier2<br>
+                    fichier2 test1/fichier3<br>
+                    test1/fichier3 test2/oui/fichier4<br>
+                    etc...</p>
+            </div>
+            <div>
+                <form enctype="multipart/form-data" action="/pageAdmin?form=test" method="post">
+                    <div>
+                        Choisir un numéro de défi :
+                        <select name="defiSelectTest" required="required" onchange="checkJeuDeTestSent(event)">
+                            {{range .ListeDefis}}
+                            <option value="{{.Num}}">{{.Num}}</option>
+                            {{end}}
+                        </select>
+                    </div>
+                    <p id="TestDeposer"></p>
+                    <div class="file-depot">
+                        <p>Dépot du test :</p>
+                        <div class="chose-file" id="file-test">
+                            <label for="input-file-test">
+                                <img src="./web/assets/images/upload.png">
+                                <p>Choisir un fichier</p></label>
+                            <input type="file" name="upload" id="input-file-test" required="required">
+                        </div>
+                    </div>
+                    <div>
+                        <input type="submit" class="button" value="déposer" name="submit">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="liste-defi" class="col s12">
+            <h3>Liste des défis enregistrés : </h3>
+            {{range .ListeDefis}}
+            <p class="{{if eq $.DefiActuel.Num .Num}}red-actuel{{end}}">
+                Défi n°{{.Num}} du {{.DateDebutString}} au {{.DateFinString}}
+                <a href="pageAdmin?Defi={{.Num}}">Afficher les participants</a></p>
+            {{end}}
+            {{if not (eq .DefiSelect.Num 0)}}
+            <h4>Liste des participants au défi {{$.DefiSelect.Num}}</h4>
+            {{if not .Participants}}
+            <p>Aucun participants</p>
+            {{else}}
+            {{if eq .Correcteur.Login ""}}
+            <p>Choisir un étudiant correcteur : <button class="button"><a href="pageAdmin?Defi={{.DefiSelect.Num}}&Correcteur">choisir</a></button></p>
+            {{else}}
+            <p>Le correcteur est {{.Correcteur.Prenom}} {{.Correcteur.Nom}}</p>
+            <p>Son mail est {{.Correcteur.Mail}}</p>
+            {{end}}
+
+            <table>
+                <tbody>
+                <tr>
+                    <td>Étudiant</td>
+                    <td>État</td>
+                    <td>Nombre de tentative</td>
+                    <td>Actions</td>
+                </tr>
+                {{range .Participants}}
+                <tr>
+                    <td>{{.Etudiant.Login}} ({{.Etudiant.Prenom}} {{.Etudiant.Nom}})</td>
+                    <td>
+                        {{if eq .Resultat.Etat 1}}
+                        <span class="etat-text win">Réussi</span>
+                        {{else if eq .Resultat.Etat 0}}
+                        <span class="etat-text lose">Échoué</span>
+                        {{else if eq .Resultat.Etat -1}}
+                        <span class="etat-text untested">Non testé</span>
+                        {{end}}
+                    </td>
+                    <td>{{.Resultat.Tentative}}</td>
+                    <td>
+                        <a href="pageAdmin?Defi={{$.DefiSelect.Num}}&Etudiant={{.Etudiant.Login}}">
+                            Afficher le script
+                        </a>
+                        |
+                        <a href="pageAdmin?Defi={{$.DefiSelect.Num}}&Etudiant={{.Etudiant.Login}}&Etat={{.Resultat.Etat}}">
+                            Modifier l'état
+                        </a>
+                    </td>
+                </tr>
+                {{end}}
+                </tbody>
+            </table>
+            <div>
+                Récupérer le résultat au format CSV : <button class="button"><a href="pageAdmin?Defi={{.DefiSelect.Num}}&getResult">Téléchager</a></button>
+            </div>
+            <div>
+                Récupérer la liste des scripts similaires : <button class="button"><a href="pageAdmin?Defi={{.DefiSelect.Num}}&getIdentique">Check</a></button>
+            </div>
+            {{range .Tricheurs}}
+            {{.}}
+            {{end}}
+            {{end}}
+            <br>
+            {{if .File}}
+            <div>
+                <h3>Contenu du script :</h3>
+                <div id="file">
+                    <p class="code">
+                    {{range .File}}
+                    {{.}} <br>
+                    {{end}}
+                    </p>
+                </div>
+            </div>
+            {{end}}
+            {{end}}
+        </div>
+        <div id="stats" class="col s12">
+            <h3>Statistiques :</h3>
+            <div class="row" style="margin-top: 0">
+                <div class="col s12 center-align"><div id="curve_chart" style="width: 100%; min-height: 500px"></div></div>
+            </div>
+            <p>Numéro du défi :</p>
+            <select id="selectStatsDefi" name="defiSelectStats" required="required" onchange="ChangeDefisStats()">
+                {{range .ListeDefis}}
+                <option value="{{.Num}}">{{.Num}}</option>
+                {{end}}
+            </select>
+            <div class="row">
+                <div class="col s6"><div id="piechart" style="width: 100%; height: 500px;"></div></div>
+                <div class="col s6"><div id="chart_div" style="width: 100%; height: 500px;"></div></div>
+            </div>
+        </div>
+        <div id="logs" class="col s12">
+            <h3>Logs :</h3>
+            {{range .Logs}}
+            <a href="pageAdmin?Log={{.}}">{{.}}</a><br>
+            {{end}}
+            <a href="pageAdmin">désélectionner</a>
+            {{if .Log}}
+            <div class="separator"></div>
+            Contenu des logs du {{.LogDate}} : <br>
+            <div class="scroll">
+                <table>
+                    <tbody>
+                    {{range .Log}}
+                    <tr>
+                        <td>
+                            {{.}}
+                        </td>
+                    </tr>
+                    {{end}}
+                    </tbody>
+                </table>
+            </div>
+            {{end}}
+        </div>
+    </div>
+    <div class="separator"></div>
+    <div id="mail">
+        <h2>Envoyer le résultat par mail aux étudiants</h2>
+        <form action="/pageAdmin?form=sendMail" method="post">
+            <input type="submit" class="button" value="Envoyer Mail" name="submit">
+        </form>
+    </div>
+    <div class="separator"></div>
+    <div id="changeID">
+
+        <h2>Changer ses identifiants de connexion</h2>
+        <form action="/pageAdmin?form=changeId" method="post" class="edit-form">
+            <p>
+                <input type="text" id="loginAd" name="loginAd" required="required" >
+                <label for="loginAd">Login</label>
+            </p>
+            <p>
+                <input type="text" id="passwordAd" name="passwordAd" required="required">
+                <label for="passwordAd">Password</label>
+            </p>
+            <input type="submit" class="button" value="Modifier" name="submit">
+        </form>
+    </div>
+    <div class="separator"></div>
+    <div id="config-file">
+        <h2>Changer le fichier de configuration d'envoi de mail</h2>
+        <form action="/pageAdmin?form=changeConfig" method="post" class="edit-form">
+            <p>
+                <input type="text" id="mailConf" name="mailConf" required="required"  >
+                <label for="mailConf">Mail d'envoi</label>
+            </p>
+            <p>
+                <input type="text" id="usernameConf" name="usernameConf" required="required" >
+                <label for="usernameConf">Username</label>
+            </p>
+            <p>
+                <input type="text" id="passwordConf" name="passwordConf" required="required" >
+                <label for="passwordConf">Password</label>
+            </p>
+            <p>
+                <input type="text" id="hostConf" name="hostConf" required="required" >
+                <label for="hostConf">Host SMTP</label>
+            </p>
+            <p>
+                <input type="text" id="portConf" name="portConf" required="required" pattern="[0-9]*">
+                <label for="portConf">SMTP Port</label>
+            </p>
+            <input type="submit" class="button" value="Modifier" name="submit">
+        </form>
+    </div>
+</div>
+<div id="footer">
+    <p>Projet réalisé sous l'initiative de Loïg Jezequel</p>
+    <p>Par Paul Vernin, Matteo Ordrenneau, Thomas Peray et Antoine Gru</p>
+    <p><a href="https://gitlab.univ-nantes.fr/E192543L/projet-s3/">
+        <img src="./web/assets/images/gitlab-logo.png">
+        GitLab du projet
+    </a></p>
+</div>
+<script src="./web/assets/js/materialize.min.js"></script>
+<script src="./web/assets/js/pageAdmin.js"></script>
+{{.Alert}}
+{{if .Alert}}
+    <p id="alertMsg">{{.Alert}}</p>
+    <script src="./web/assets/js/alert.js"></script>
+{{end}}
+
+</body>
+</html>

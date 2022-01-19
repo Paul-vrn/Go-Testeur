@@ -1,0 +1,298 @@
+* {
+    font-family: Roboto, serif;
+    padding: 0;
+    margin: 0;
+}
+
+h1 {
+    font-size: 2em;
+    font-weight: bold;
+    padding: 0;
+    margin: 0;
+}
+
+h2 {
+    font-size: 25px;
+    margin-left: 2.5%;
+}
+
+h3 {
+    font-size: 20px;
+}
+
+
+.main {
+    width: 80%;
+    margin: auto;
+    padding:0.5%;
+    display: flex;
+    flex-direction: column;
+}
+
+
+#header {
+    background-color: #cdcdcd;
+    display: flex;
+    padding: 10px;
+    justify-content: flex-start;
+    align-items: center;
+    border-bottom: solid 5px #50a969;
+}
+
+#header > * {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#logout {
+    border-radius: 5px;
+    box-shadow: none;
+    background-color: rgb(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#logout a {
+    text-decoration: none;
+    color: white;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+}
+.separator {
+    width: 100%;
+    height: 1px;
+    background-color: #838383;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+
+.row {
+    width: 100%;
+}
+
+.row > div > form > div {
+    margin-top: 30px;
+}
+
+.row > div > div {
+    margin-top: 30px;
+}
+
+.row > div > div > form > div{
+    margin-top: 30px;
+}
+
+.file-depot p {
+    margin-bottom: 10px;
+}
+
+.chose-file input#input-file-defi, input#input-file-test, .chose-file input#input-file-defi-modify  {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+    cursor: pointer;
+}
+
+.chose-file {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    background-color: #50a969;
+    width: -moz-fit-content;
+    width: fit-content;
+    height:50px;
+    cursor: pointer;
+}
+
+.chose-file:hover {
+    background-color: #377249;
+}
+
+.chose-file label {
+    font-weight: bold;
+    color: white;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.chose-file label p {
+    margin: 10px;
+}
+
+.chose-file img {
+    height: 30px;
+    margin: 10px;
+}
+
+.dates {
+    display: flex;
+    width: 25%;
+    justify-content: space-between;
+}
+
+.date-selector {
+    display: flex;
+    flex-flow: column;
+    width: -moz-fit-content;
+    width: fit-content;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.explication {
+    font-style: italic;
+}
+
+.explication p {
+    font-size: 17px;
+}
+
+.code {
+    background-color: #2d2d2d;
+    font-style: normal;
+    color: whitesmoke;
+    font-family: consolas, "Liberation Mono", courier, monospace;
+    padding: 10px;
+}
+
+.button {
+    background-color: white;
+    border: 1px solid black;
+    padding:15px;
+    font-weight: bold;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+#liste-defi p {
+    padding: 7px;
+}
+
+.red-actuel {
+    border-left: red 3px solid;
+    border-radius: 2px;
+    background-color: #ffd7d7;
+}
+
+.titre-defi {
+    width: 50%;
+    padding: 10px;
+}
+
+.defi-actuel {
+    border-radius: 5px;
+    border-bottom: #ec3939 3px solid;
+    padding-bottom: 1px;
+
+}
+
+#mail {
+    display: flex;
+
+    justify-content: space-around;
+    align-items: center;
+    width: 50%;
+}
+#delete {
+    display: flex;
+    align-items: center;
+}
+#delete h2 {
+    margin: 0px 0px 0px 30px;
+    padding-right: 30px;
+}
+
+#mail h2 {
+    margin: 0;
+}
+
+#mail .button {
+    border: 3px solid #50a969;
+    color: #50a969;
+}
+
+.edit-form {
+    display: flex;
+    justify-content: space-between;
+    width: 50%;
+}
+
+#config-file form {
+    width: 100%;
+}
+
+.button:hover {
+    border: 1px solid #2d2d2d;
+    color: #2d2d2d;
+    cursor: pointer;
+
+}
+
+#footer {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #cdcdcd;
+    border-top: solid 5px #50a969;
+    height:100px;
+    margin-top: 50px;
+}
+
+#footer img {
+    height: 20px;
+}
+
+#footer a {
+    display: flex;
+    align-items: center;
+    width: 150px;
+    justify-content: space-between;
+    /*text-decoration: none;*/
+    text-decoration: underline;
+    color: black;
+}
+
+
+/* Redefinition du framework */
+.tabs .tab a {
+    color: #50a969;
+}
+
+.tabs .tab a:hover, .tabs .tab a.active {
+    color: #50a969;
+}
+
+.tabs .tab a:focus, .tabs .tab a:focus.active {
+    background-color: rgba(116, 255, 151, 0.2);
+}
+
+.tabs .indicator {
+    background-color: #50a969;
+}
+
+.row .col.s3 {
+    width: 20%;
+}
+
+input[type=text].datepicker {
+    width: min-content;
+}
+
+.tabs .tab.disabled a, .tabs .tab.disabled a:hover {
+    color: rgba(58, 186, 89, 0.4);
+}
+
+input[type=text]:not(.browser-default):focus:not([readonly]) {
+    border-bottom: 1px solid #50a969;
+}
+
+/* --- */
