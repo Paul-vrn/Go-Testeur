@@ -8,7 +8,7 @@
 GitLab : https://gitlab.univ-nantes.fr/E192543L/projet-s3/
 
 Cette application web vise à simplifier le travail nécessaire à la réalisation des défis du lundi proposé aux premières années de l'IUT Informatique de Nantes, dans le module Introduction aux Systèmes Informatiques.
-Elle utilisable d'une part par les élèves, et d'une autre part par les enseignants.
+Elle est utilisable d'une part par les étudiants de l'IUT mais il y a une partie administrateur pour les enseignants.
 
 <h2>1. Installation </h2>
 Il est nécessaire d'installer le projet dans un environnement ayant Go (1.15.2 recommandé), ainsi que GCC (9.2 recommandé) pour gérer la database SQLite3.
